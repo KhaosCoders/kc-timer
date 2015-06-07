@@ -1,0 +1,107 @@
+<!doctype html>
+<!--
+@license
+Copyright (c) 2015 Khaos-Coders. All rights reserved.
+This code may only be used under the BSD style license found at http://khaoscoders.github.io/LICENSE.txt
+The complete set of authors may be found at http://khaoscoders.github.io/AUTHORS.txt
+The complete set of contributors may be found at http://khaoscoders.github.io/CONTRIBUTORS.txt
+Code distributed by Google as part of the polymer project is also
+subject to an additional IP rights grant found at http://khaoscoders.github.io/PATENTS.txt
+-->
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, minimum-scale=1.0, initial-scale=1.0, user-scalable=yes">
+    <title>array-composer Demo</title>
+    <script src="../../webcomponentsjs/webcomponents-lite.js"></script>
+    <link rel="import" href="../kc-timer.html">
+		
+		<link rel="stylesheet" href="../../paper-styles/paper-styles.html">
+		<link rel="import" href="../../paper-styles/demo-pages.html">
+		
+		<style>			
+			span.time {
+				font-weight: bold;
+			}
+			
+			span.hours {
+				font-size: 3em;
+			}
+			
+			span.min {
+				font-size: 2em;
+			}
+			
+			span.sec {
+				font-size: 1.5em;
+			}
+			
+			span.milsec {
+				font-size: 1em;
+			}
+		</style>
+  </head>
+  <body>
+		<!-- Enables polymer data-binding in main page. Yeay!! -->
+		<template is="dom-bind" id="dom-bind">
+			<div class="vertical layout">
+				
+				<H4>An example of <code>&lt;kc-timer&gt;</code>:</H4>
+				
+				<kc-timer interval="1000" 
+					timestamp="{{ts}}" 
+					milliseconds="{{ms}}"
+					seconds="{{sec}}"
+					minutes="{{min}}"
+					hours="{{hr}}"
+					day="{{dow}}"
+					date="{{dat}}"
+					month="{{mon}}"
+					year="{{y}}"
+					output="ts,ms,sec,hr,min,dow,dat,mon,y" 
+					active
+					fire-on-activate>
+				</kc-timer>
+				
+				<div>
+					Timestamp: <span>{{ts}}</span>
+				</div>
+				<div>
+					Raw: 
+						<span>{{y}}</span>/<span>{{dat}}</span>/<span>{{addition(mon,1)}}</span>
+						<span>{{hr}}</span>:<span>{{min}}</span>:<span>{{sec}}</span>'<span>{{ms}}</span>
+				</div>
+				
+				<h4>Adding some style</h4>
+				
+				<kc-timer interval="100" 
+					milliseconds="{{fms}}"
+					seconds="{{fsec}}"
+					minutes="{{fmin}}"
+					hours="{{fhr}}"
+					output="ms,sec,hr,min" 
+					active
+					fire-on-activate>
+				</kc-timer>
+				
+				<div>
+					<span class="timer hours">{{fhr}}</span><span class="timer min">:</span>
+					<span class="timer min">{{fmin}}</span><span class="timer sec">:</span>
+					<span class="timer sec">{{fsec}}</span><span class="timer milsec">'</span>
+					<span class="timer milsec">{{fms}}</span>
+				</div>
+			</div>
+		</template>
+		
+		<script>
+			// Define polymer data-binding functions
+			(function() {
+				var domBind = document.getElementById('dom-bind');
+				// Add function for data-binding
+				domBind.addition = function (a,b) {
+					return a+b;
+				}
+			})();
+		</script>
+  </body>
+</html>

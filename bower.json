@@ -1,0 +1,36 @@
+{
+  "name": "kc-timer",
+  "version": "1.0.0",
+  "authors": [
+    "Khaos <khaos@khaos-coders.org>"
+  ],
+  "description": "A polymer element that helps with time and interval related issues.",
+  "keywords": [
+    "web-component",
+    "web-components",
+    "polymer",
+	"bind",
+	"binding",
+	"data",
+	"time",
+	"timestamp",
+	"ts",
+	"interval"
+  ],
+  "main": "kc-timer.html",
+  "license": "http://khaoscoders.github.io/LICENSE.txt",
+  "homepage": "https://github.com/KhaosCoders/kc-timer/",
+  "ignore": [
+    "/.*",
+    "/test/",
+    "/demo/"
+  ],
+  "dependencies": {
+    "polymer": "Polymer/polymer#^1.0.0"
+  },
+  "devDependencies": {
+    "iron-component-page": "PolymerElements/iron-component-page#^1.0.0",
+    "paper-input": "PolymerElements/paper-input#^1.0.0",
+    "web-component-tester": "*"
+  }
+}

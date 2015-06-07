@@ -1,0 +1,236 @@
+<!--
+@license
+Copyright (c) 2015 Khaos-Coders. All rights reserved.
+This code may only be used under the BSD style license found at http://khaoscoders.github.io/LICENSE.txt
+The complete set of authors may be found at http://khaoscoders.github.io/AUTHORS.txt
+The complete set of contributors may be found at http://khaoscoders.github.io/CONTRIBUTORS.txt
+Code distributed by Khaos-Coders as part of this project is also
+subject to an additional IP rights grant found at http://khaoscoders.github.io/PATENTS.txt
+-->
+<link rel="import" href="../polymer/polymer.html">
+
+<!--
+This element helps you with timer and interval related issues.
+
+You can set a interval to receive a timestamp via data-binding.
+Or raw date fields like `milliseconds`, `seconds`, `minutes`, `hours`, 
+`day`, `date`, `month`, `year`, if you want.
+
+Example:
+
+		<kc-timer interval="1000" timestamp="{{ts}}" output="ts" active></kc-timer>
+		<kc-timer interval="1000" hours="{{h}}" minutes="{{m}}" seconds="{{s}}" output="hr,min,sec" active></kc-timer>
+
+@demo
+-->
+
+<script>
+	
+	Polymer({
+	
+		is: 'kc-timer',
+		
+		/**
+		 * Fires when the timer is active and the interval is reached.
+		 * 
+		 * @event timer
+		 */
+		
+		properties: {
+			/**
+			 * Sets the timer active and running.
+			 */
+			active: {
+				type: Boolean,
+				value: false
+			},
+			
+			/**
+			 * Defines whether the timer is fired when activated.
+			 * This helps with UI issues, where the first interval hasn't passed
+			 * and the UI needs the event to be displayed correctly.
+			 */
+			fireOnActivate: {
+				type: Boolean,
+				value: false
+			},
+			
+			/**
+			  * The timer interval in milliseconds.
+				*/
+			interval: {
+				type: Number,
+				value: 1000
+			},
+			
+			/**
+			 * Defines which output you which.
+			 * `timestamp` will update the timestamp property.
+			 * Or will update the milliseconds, seconds, minutes, hour, day, month, year properties.
+			 */
+			output: {
+				type: String,
+				value: ''
+			},
+			
+
+			/**
+			 * Will be set to a Unix timestamp if `output` contains 'ts'.
+			 */
+			timestamp: {
+				type: Number,
+				notify: true,
+				readOnly: true
+			},
+			
+			/**
+			 * Will be set to the milliseconds if `output` contains 'ms'.
+			 */
+			milliseconds: {
+				type: String,
+				notify: true,
+				readOnly: true
+			},
+			
+			/**
+			 * Will be set to the seconds if `output` contains 'sec'.
+			 */
+			seconds: {
+				type: String,
+				notify: true,
+				readOnly: true
+			},
+			
+			/**
+			 * Will be set to the minutes if `output` contains 'min'.
+			 */
+			minutes: {
+				type: String,
+				notify: true,
+				readOnly: true
+			},
+			
+			/**
+			 * Will be set to the hours if `output` contains 'hr'.
+			 */
+			hours: {
+				type: String,
+				notify: true,
+				readOnly: true
+			},
+			
+			/**
+			 * Will be set to the day of week if `output` contains 'dow'.
+			 */
+			day: {
+				type: String,
+				notify: true,
+				readOnly: true
+			},
+			
+			/**
+			 * Will be set to the date if `output` contains 'dat'.
+			 */
+			date: {
+				type: String,
+				notify: true,
+				readOnly: true
+			},
+			
+			/**
+			 * Will be set to the month if `output` contains 'mon'.
+			 */
+			month: {
+				type: String,
+				notify: true,
+				readOnly: true
+			},
+			
+			/**
+			 * Will be set to the year if `output` contains 'y'.
+			 */
+			year: {
+				type: String,
+				notify: true,
+				readOnly: true
+			}
+			
+		},
+		
+		observers: [
+		  // includes fireOnActivate and output because of dependencies
+			'_activeOptionChanged(active,fireOnActivate,output)',
+			'_intervalOptionChanged(interval)'
+		],
+		
+		/**
+		 * Updates the data-bindings
+		 * depending on the `output` configuration
+		 */
+		_updateOutput: function(date) {
+			if (this.output.indexOf('ts')>-1)
+				this._setTimestamp(date.getTime());
+			if(this.output.indexOf('ms')>-1) 
+				this._setMilliseconds(date.getMilliseconds());
+			if(this.output.indexOf('sec')>-1) 
+				this._setSeconds(date.getSeconds());
+			if(this.output.indexOf('min')>-1) 
+				this._setMinutes(date.getMinutes());
+			if(this.output.indexOf('hr')>-1) 
+				this._setHours(date.getHours());
+			if(this.output.indexOf('dow')>-1) 
+				this._setDay(date.getDay());
+			if(this.output.indexOf('dat')>-1) 
+				this._setDate(date.getDate());
+			if(this.output.indexOf('mon')>-1) 
+				this._setMonth(date.getMonth());
+			if(this.output.indexOf('y')>-1) 
+				this._setYear(date.getYear() + 1900);
+		},
+		
+		/**
+		 * Handles the timer elapsed event
+		 */
+		_timerElapsed: function() {
+			// Freeze time
+			var date = new Date();
+			// Fire timer event
+			this.fire('timer', {date: date});
+			
+			this._updateOutput(date);
+		},
+		
+		/**
+		 * The DOM timer reference used
+		 */
+		_timer: null,
+		
+		/**
+		 * Handles timer activation and deactivation
+		 */
+		_activeOptionChanged: function() {
+			if (!this.active && this._timer) {
+				window.clearInterval(this._timer);
+				this._timer=null;
+			}
+			else if (this.active && !this._timer && this.interval>0) {
+				var _this = this;
+				this._timer = window.setInterval(function() { _this._timerElapsed(); }, this.interval);
+				if (this.fireOnActivate)
+					this._timerElapsed();
+			}
+		},
+		
+		/**
+		 * Handles changes in the interval
+		 */
+		_intervalOptionChanged: function() {
+			if (this.active) {
+				// Deactivate and activate again
+				this.set('active', false);
+				this.set('active', true);
+			}
+		}
+	});
+	
+</script>
